@@ -14,11 +14,17 @@
     }
   },
   "rules": {
-    "unicorn/expiring-todo-comments": 0
+    "unicorn/expiring-todo-comments": 0,
+    "unicorn/prevent-abbreviations": [
+      "error",
+      {
+        "ignore": "[rR]ef$"
+      }
+    ]
   },
   "overrides": [
     {
-      "files": ["*.jsx", "*.tsx"],
+      "files": ["src/**/*.jsx", "src/**/*.tsx"],
       "rules": {
         "unicorn/filename-case": [
           "error",
