@@ -2,7 +2,7 @@ import { cookies } from 'next/headers';
 import type { z } from 'zod';
 import {
   LoginSessionSchema,
-} from './models/session';
+} from '@/models/session';
 import {
   decrypt,
   encrypt,

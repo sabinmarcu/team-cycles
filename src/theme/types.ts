@@ -1,5 +1,4 @@
-
-export type ThemeVariants = "light" | "dark";
+export type ThemeVariants = 'light' | 'dark';
 
 export interface ThemeOptionConfig {
   name: string;

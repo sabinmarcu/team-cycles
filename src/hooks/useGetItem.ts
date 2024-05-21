@@ -1,7 +1,22 @@
-import { firestore, doc, onSnapshot, updateDoc, deleteDoc } from "@/firebase";
-import { Collection, SchemaOf, schemas } from "@/auth/v2/models";
-import { useCallback, useEffect, useMemo, useState } from "react";
-import { z } from "zod";
+import {
+  firestore,
+  doc,
+  onSnapshot,
+  updateDoc,
+  deleteDoc,
+} from '@/firebase';
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
+import type { z } from 'zod';
+import type {
+  Collection,
+  SchemaOf,
+} from '@/models';
+import { schemas } from '@/models';
 
 export const useGetItem = <T extends Collection>(
   collection: T,
@@ -11,36 +26,36 @@ export const useGetItem = <T extends Collection>(
   const document = useMemo(
     () => doc(firestore, collection, id),
     [collection, id],
-  )
+  );
   useEffect(
     () => {
       const unsubscribe = onSnapshot(
         document,
         (snapshot) => {
-          const data = snapshot.data();
+          const next = snapshot.data();
           const schema = schemas[collection];
           setData(
-            data 
-              ? schema.parse({ id, ...data })
-              : undefined
+            next
+              ? schema.parse({ id, ...next })
+              : undefined,
           );
-        }
+        },
       );
       return unsubscribe;
     },
-    [document],
-  )
+    [document, collection, id],
+  );
   const update = useCallback(
-    ({ id, ...data }: z.infer<SchemaOf<T>>) => {
-      updateDoc(document, data as any);
+    ({ id: _, ...next }: z.infer<SchemaOf<T>>) => {
+      updateDoc(document, next as any);
     },
     [document],
-  )
+  );
   const remove = useCallback(
     () => {
-      deleteDoc(document)
+      deleteDoc(document);
     },
-    [document]
-  )
+    [document],
+  );
   return [data, update, remove] as const;
-}
+};
