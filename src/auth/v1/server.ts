@@ -1,23 +1,35 @@
-"use server";
+'use server';
 
-import {
+import type {
   GenerateAuthenticationOptionsOpts,
   GenerateRegistrationOptionsOpts,
   VerifyAuthenticationResponseOpts,
   VerifyRegistrationResponseOpts,
+} from '@simplewebauthn/server';
+import {
   generateAuthenticationOptions,
   generateRegistrationOptions,
   verifyAuthenticationResponse,
   verifyRegistrationResponse,
-} from "@simplewebauthn/server";
-import { UserDevice, createUser, findUser } from "@/auth/user";
-import { getCurrentSession, updateCurrentSession } from "@/auth/session";
-import { origin, rpId } from "@/auth/constants";
+} from '@simplewebauthn/server';
 import {
+  origin,
+  rpId,
+} from '@/auth/constants';
+import type {
   AuthenticationResponseJSON,
   RegistrationResponseJSON,
-} from "@simplewebauthn/types";
-import { isoBase64URL } from "@simplewebauthn/server/helpers";
+} from '@simplewebauthn/types';
+import { isoBase64URL } from '@simplewebauthn/server/helpers';
+import {
+  createUser,
+  findUser,
+} from '@/auth/v1/user';
+import type { UserDevice } from '@/auth/v1/user';
+import {
+  getCurrentSession,
+  updateCurrentSession,
+} from '@/auth/v1/session';
 
 export const generateWebAuthnRegistrationOptions = async (email: string) => {
   const user = await findUser(email);
@@ -25,20 +37,20 @@ export const generateWebAuthnRegistrationOptions = async (email: string) => {
   if (user) {
     return {
       success: false,
-      message: "User already exists",
+      message: 'User already exists',
     };
   }
 
-  const opts: GenerateRegistrationOptionsOpts = {
-    rpName: "SimpleWebAuthn Example",
+  const rawOptions: GenerateRegistrationOptionsOpts = {
+    rpName: 'SimpleWebAuthn Example',
     rpID: rpId,
     userID: isoBase64URL.toBuffer(email),
     userName: email,
-    timeout: 60000,
-    attestationType: "none",
+    timeout: 60_000,
+    attestationType: 'none',
     excludeCredentials: [],
     authenticatorSelection: {
-      residentKey: "discouraged",
+      residentKey: 'discouraged',
     },
     /**
      * Support the two most common algorithms: ES256, and RS256
@@ -46,7 +58,7 @@ export const generateWebAuthnRegistrationOptions = async (email: string) => {
     supportedAlgorithmIDs: [-7, -257],
   };
 
-  const options = await generateRegistrationOptions(opts);
+  const options = await generateRegistrationOptions(rawOptions);
 
   await updateCurrentSession({ currentChallenge: options.challenge, email });
 
@@ -66,27 +78,27 @@ export const verifyWebAuthnRegistration = async (
   if (!email || !currentChallenge) {
     return {
       success: false,
-      message: "Session expired",
+      message: 'Session expired',
     };
   }
 
   const expectedChallenge = currentChallenge;
 
-  const opts: VerifyRegistrationResponseOpts = {
+  const options: VerifyRegistrationResponseOpts = {
     response: data,
     expectedChallenge: `${expectedChallenge}`,
     expectedOrigin: origin,
     expectedRPID: rpId,
     requireUserVerification: false,
   };
-  const verification = await verifyRegistrationResponse(opts);
+  const verification = await verifyRegistrationResponse(options);
 
   const { verified, registrationInfo } = verification;
 
   if (!verified || !registrationInfo) {
     return {
       success: false,
-      message: "Registration failed",
+      message: 'Registration failed',
     };
   }
 
@@ -109,7 +121,7 @@ export const verifyWebAuthnRegistration = async (
   } catch {
     return {
       success: false,
-      message: "User already exists",
+      message: 'User already exists',
     };
   }
 
@@ -124,21 +136,21 @@ export const generateWebAuthnLoginOptions = async (email: string) => {
   if (!user) {
     return {
       success: false,
-      message: "User does not exist",
+      message: 'User does not exist',
     };
   }
 
-  const opts: GenerateAuthenticationOptionsOpts = {
-    timeout: 60000,
-    allowCredentials: user.devices.map((dev) => ({
-      id: dev.credentialID,
-      type: "public-key",
-      transports: dev.transports,
+  const rawOptions: GenerateAuthenticationOptionsOpts = {
+    timeout: 60_000,
+    allowCredentials: user.devices.map((development) => ({
+      id: development.credentialID,
+      type: 'public-key',
+      transports: development.transports,
     })),
-    userVerification: "required",
+    userVerification: 'required',
     rpID: rpId,
   };
-  const options = await generateAuthenticationOptions(opts);
+  const options = await generateAuthenticationOptions(rawOptions);
 
   await updateCurrentSession({ currentChallenge: options.challenge, email });
 
@@ -156,7 +168,7 @@ export const verifyWebAuthnLogin = async (data: AuthenticationResponseJSON) => {
   if (!email || !currentChallenge) {
     return {
       success: false,
-      message: "Session expired",
+      message: 'Session expired',
     };
   }
 
@@ -165,36 +177,36 @@ export const verifyWebAuthnLogin = async (data: AuthenticationResponseJSON) => {
   if (!user) {
     return {
       success: false,
-      message: "User does not exist",
+      message: 'User does not exist',
     };
   }
 
-  const dbAuthenticator = user.devices.find(
-    (dev) => dev.credentialID === data.rawId,
+  const databaseAuthenticator = user.devices.find(
+    (development) => development.credentialID === data.rawId,
   );
 
-  if (!dbAuthenticator) {
+  if (!databaseAuthenticator) {
     return {
       success: false,
-      message: "Authenticator is not registered with this site",
+      message: 'Authenticator is not registered with this site',
     };
   }
 
-  const opts: VerifyAuthenticationResponseOpts = {
+  const options: VerifyAuthenticationResponseOpts = {
     response: data,
     expectedChallenge: `${currentChallenge}`,
     expectedOrigin: origin,
     expectedRPID: rpId,
     authenticator: {
-      ...dbAuthenticator,
-      credentialID: dbAuthenticator.credentialID,
+      ...databaseAuthenticator,
+      credentialID: databaseAuthenticator.credentialID,
       credentialPublicKey: isoBase64URL.toBuffer(
-        dbAuthenticator.credentialPublicKey,
+        databaseAuthenticator.credentialPublicKey,
       ),
     },
     requireUserVerification: true,
   };
-  const verification = await verifyAuthenticationResponse(opts);
+  const verification = await verifyAuthenticationResponse(options);
 
   await updateCurrentSession({});
 

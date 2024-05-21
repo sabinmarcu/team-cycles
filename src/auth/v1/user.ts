@@ -1,14 +1,14 @@
+import type { AuthenticatorDevice } from '@simplewebauthn/types';
+import { kv } from '@vercel/kv';
+
 export const rpOrigin = `https://${process.env.rpID}`;
 
-import { AuthenticatorDevice } from "@simplewebauthn/types";
-import { kv } from "@vercel/kv";
-
-const userPrefix = "user-";
+const userPrefix = 'user-';
 
 // The original types are "Buffer" which is not supported by KV
 export type UserDevice = Omit<
   AuthenticatorDevice,
-  "credentialPublicKey" | "credentialID"
+  'credentialPublicKey' | 'credentialID'
 > & {
   credentialID: string;
   credentialPublicKey: string;
@@ -32,7 +32,7 @@ export const createUser = async (
   const user = await findUser(email);
 
   if (user) {
-    throw new Error("User already exists");
+    throw new Error('User already exists');
   }
 
   await kv.set(`${userPrefix}${email}`, { email, devices });

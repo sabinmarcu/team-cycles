@@ -1,5 +1,8 @@
-import { env } from "../../app/env.mjs";
+// eslint-disable-next-line import/extensions
+import { env as environment } from '@/env/server';
 
-export const rpId = env.RP_ID;
-export const rpName = env.RP_NAME;
-export const origin = `https://${env.RP_ID}`;
+export const rpId = environment.RP_ID;
+export const rpName = environment.RP_NAME;
+export const origin = `${environment.RP_PROTOCOL}://${[environment.RP_ID, environment.RP_PORT]
+  .filter(Boolean)
+  .join(':')}`;

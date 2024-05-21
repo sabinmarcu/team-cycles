@@ -1,0 +1,11 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.container {
+  @apply min-w-[18rem] max-w-[80rem] mx-2 xl:mx-0;
+}
+
+* {
+  transition: background 0.3s ease-out, background-color 0.3s ease-out, border-color 0.3s ease-out;
+}
