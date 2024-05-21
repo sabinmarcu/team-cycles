@@ -56,3 +56,4 @@ export const createSession = async <T extends SessionType>(
   const payload = await encrypt(data, expirationTime ?? expirationTimes[session]);
   return payload;
 };
+

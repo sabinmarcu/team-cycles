@@ -14,7 +14,7 @@ export const ThemeSelectorMenu = ({
     onChange(value as any);
   };
   return (
-    <div className="dropdown dropdown-end">
+    <div className="dropdown dropdown-end flex align-center justify-center">
       <button tabIndex={0} className="btn btn-square theme-options" type="button">
         {Object.entries(themeOptions).map(([option, { icon: Icon }]) => (
           <div className="theme-option" data-theme-option={option} key={option}>
