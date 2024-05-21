@@ -16,4 +16,17 @@
   "rules": {
     "unicorn/expiring-todo-comments": 0
   },
+  "overrides": [
+    {
+      "files": ["*.jsx", "*.tsx"],
+      "rules": {
+        "unicorn/filename-case": [
+          "error",
+          {
+            "case": "pascalCase"
+          }
+        ]
+      }
+    }
+  ]
 }

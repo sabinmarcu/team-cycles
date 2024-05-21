@@ -1,8 +1,9 @@
-import { Simplify } from 'type-fest';
-import { DBRawSchema, DBSchema } from '@/types';
+import type { DBRawSchema } from '@/types';
 import type { AuthenticatorDevice } from '@simplewebauthn/types';
-import { ZodSchema, z } from 'zod';
-import { createDbSchema } from '../utils/dbschema';
+import {
+  z,
+} from 'zod';
+import { createDbSchema as createDatabaseSchema } from '@/auth/v2/utils/dbschema';
 
 export type UserDevice = Omit<
   AuthenticatorDevice,
@@ -12,7 +13,7 @@ export type UserDevice = Omit<
   credentialPublicKey: string;
 };
 
-export const CredentialSchema = createDbSchema({
+export const CredentialSchema = createDatabaseSchema({
   credentialPublicKey: z.string(),
   counter: z.number(),
   credentialID: z.string(),
