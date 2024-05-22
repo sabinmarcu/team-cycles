@@ -14,16 +14,11 @@ import { env } from '@/env/client';
 import type { AuthenticationResponseJSON } from '@simplewebauthn/types';
 import {
   firestore,
-  collection,
-  query,
-  where,
-  getDocs,
   parseDocument,
   getDoc,
   doc,
 } from '@/firebase';
 import { isoBase64URL } from '@simplewebauthn/server/helpers';
-import { CredentialSchema } from '@/models/credential';
 import { startAuthentication } from '@simplewebauthn/browser';
 import {
   createSession,
@@ -31,6 +26,7 @@ import {
   removeSession,
 } from './session';
 import { origin } from '../constants';
+import { getCredential } from './credential';
 
 export async function loginUser(
   user: UserType,
@@ -61,16 +57,11 @@ export async function verifyLogin(data: AuthenticationResponseJSON) {
 
   const { challenge } = sessionData;
 
-  const devicesCollection = collection(firestore, 'credential');
-  const databaseDevices = await getDocs(
-    query(devicesCollection, where('credentialID', '==', data.rawId)),
-  );
+  const databaseDevice = await getCredential(data.rawId);
 
-  if (!databaseDevices || databaseDevices.size === 0) {
-    throw new Error('Device not registered for authentication!');
+  if (!databaseDevice) {
+    throw new Error('Device not registered!');
   }
-
-  const databaseDevice = parseDocument(databaseDevices.docs[0], CredentialSchema);
 
   const options: VerifyAuthenticationResponseOpts = {
     response: data,

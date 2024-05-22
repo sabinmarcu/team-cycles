@@ -16,7 +16,10 @@ import {
   getSession,
   removeSession,
 } from './session';
-import { addDevice } from './device';
+import {
+  addCredential,
+  getCredential,
+} from './credential';
 import { createUser } from './user';
 import { loginUser } from './login';
 
@@ -38,10 +41,7 @@ export const startDeviceRegistration = async () => {
 
   await createSession('login', { challenge: options.challenge });
 
-  return {
-    success: true,
-    data: options,
-  };
+  return options;
 };
 
 export const verifyDeviceRegistration = async (
@@ -50,6 +50,11 @@ export const verifyDeviceRegistration = async (
   const {
     challenge,
   } = await getSession('login') ?? {};
+
+  const existingCredential = await getCredential(data.rawId);
+  if (existingCredential) {
+    throw new Error('Device is already registered for authentication!');
+  }
 
   const options: VerifyRegistrationResponseOpts = {
     response: data,
@@ -82,16 +87,12 @@ export const verifyDeviceRegistration = async (
 export const registerAccount = async (name: string) => {
   const response = await startDeviceRegistration();
 
-  if (!response.success || !response.data) {
-    throw new Error('Something went wrong!');
-  }
-
-  const localResponse = await startRegistration(response.data);
+  const localResponse = await startRegistration(response);
   const verifiedResponse = await verifyDeviceRegistration(localResponse);
 
   const newUser = await createUser(name);
 
-  await addDevice(verifiedResponse, newUser.id);
+  await addCredential(verifiedResponse, newUser.id);
 
   return loginUser(newUser);
 };
