@@ -1,6 +1,6 @@
 'use client';
 
-import { registerAccount } from '@/auth/v2/register';
+import { registerAccount } from '@/auth/register';
 import { Person } from '@mui/icons-material';
 import type {
   ChangeEvent,

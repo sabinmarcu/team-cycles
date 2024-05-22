@@ -25,7 +25,7 @@ import {
   getSession,
   removeSession,
 } from './session';
-import { origin } from '../constants';
+import { origin } from './constants';
 import { getCredential } from './credential';
 
 export async function loginUser(

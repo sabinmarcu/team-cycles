@@ -1,6 +1,6 @@
 'use client';
 
-import { logout } from '@/auth/v2/login';
+import { logout } from '@/auth/login';
 
 export const LogoutButton = () => (
   <>

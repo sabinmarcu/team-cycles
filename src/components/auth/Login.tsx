@@ -1,6 +1,6 @@
 'use client';
 
-import { login } from '@/auth/v2/login';
+import { login } from '@/auth/login';
 
 export const LoginButton = () => (
   <>

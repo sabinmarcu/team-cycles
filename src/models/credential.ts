@@ -3,7 +3,7 @@ import type { AuthenticatorDevice } from '@simplewebauthn/types';
 import {
   z,
 } from 'zod';
-import { createDbSchema as createDatabaseSchema } from '@/auth/v2/utils/dbschema';
+import { createDbSchema as createDatabaseSchema } from '@/auth/utils/dbschema';
 
 export type UserDevice = Omit<
   AuthenticatorDevice,

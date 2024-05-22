@@ -1,6 +1,6 @@
 /* eslint-disable jsx-a11y/no-noninteractive-tabindex */
 import { Person } from '@mui/icons-material';
-import { getSession } from '@/auth/v2/session';
+import { getSession } from '@/auth/session';
 import type { FC } from 'react';
 import {
   use,

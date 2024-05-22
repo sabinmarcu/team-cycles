@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { createDbSchema as createDatabaseSchema } from '@/auth/v2/utils/dbschema';
+import { createDbSchema as createDatabaseSchema } from '@/auth/utils/dbschema';
 
 export const UserSchema = createDatabaseSchema({
   name: z.string(),
