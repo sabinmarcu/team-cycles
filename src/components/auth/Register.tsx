@@ -59,6 +59,7 @@ export const RegisterButton = () => {
                 We&apos;ll just need your name to get things started,
                 and a YubiKey, TouchID, Passkey, etc.
               </p>
+              {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
               <label
                 className="input input-bordered flex items-center gap-2 my-4"
                 htmlFor="account-name-input"

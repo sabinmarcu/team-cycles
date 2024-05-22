@@ -1,5 +1,5 @@
-import { OneMoreButton } from "@/components/users/OneMoreButton";
-import { UsersList } from "@/components/users/UsersList";
+import { OneMoreButton } from '@/components/users/OneMoreButton';
+import { UsersList } from '@/components/users/UsersList';
 
 export default function UsersListPage() {
   return (
@@ -11,5 +11,5 @@ export default function UsersListPage() {
         </div>
       </div>
     </main>
-  )
+  );
 }
