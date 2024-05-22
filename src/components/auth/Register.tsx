@@ -87,7 +87,7 @@ export const RegisterButton = () => {
           </form>
         </dialog>
       ),
-      document.body)}
+      document && document.body)}
     </>
   );
 };
