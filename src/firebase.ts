@@ -1,7 +1,10 @@
 import { env } from '@/env/client';
 import type { DBSchema } from '@/types';
 import { initializeApp } from 'firebase/app';
-import { getFirestore } from 'firebase/firestore';
+import {
+  connectFirestoreEmulator,
+  getFirestore,
+} from 'firebase/firestore';
 import type { z } from 'zod';
 
 const firebaseConfig = {
@@ -15,6 +18,10 @@ const firebaseConfig = {
 
 export const app = initializeApp(firebaseConfig);
 export const firestore = getFirestore(app);
+
+if (env.USE_FIRESTORE_EMULATOR) {
+  connectFirestoreEmulator(firestore, '127.0.0.1', 8080);
+}
 
 export const parseDocument = <T extends DBSchema>(
   input: { id: string, data: () => any },
@@ -35,4 +42,6 @@ export {
   updateDoc,
   onSnapshot,
   deleteDoc,
+  where,
+  query,
 } from 'firebase/firestore';

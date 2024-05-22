@@ -13,6 +13,7 @@ export const rawEnvironmentSchema = {
   FIREBASE_STORAGE_BUCKET: z.string(),
   FIREBASE_MESSAGING_SENDER_ID: z.string(),
   FIREBASE_APP_ID: z.string(),
+  USE_FIRESTORE_EMULATOR: z.string().optional(),
 };
 const environmentSchema = z.object(rawEnvironmentSchema);
 
@@ -37,6 +38,8 @@ export const rawEnv = {
     ?? process.env.FIREBASE_MESSAGING_SENDER_ID,
   FIREBASE_APP_ID: process.env.NEXT_PUBLIC_FIREBASE_APP_ID
     ?? process.env.FIREBASE_APP_ID,
+  USE_FIRESTORE_EMULATOR: process.env.NEXT_PUBLIC_USE_FIRESTORE_EMULATOR
+    ?? process.env.USE_FIRESTORE_EMULATOR,
 } satisfies Record<keyof typeof rawEnvironmentSchema, string | undefined>;
 
 export const env = environmentSchema.parse(rawEnv);

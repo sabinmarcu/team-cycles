@@ -1,15 +1,15 @@
 'use client';
 
-import { login } from '@/auth/v2/login';
+import { logout } from '@/auth/v2/login';
 
-export const LoginButton = () => (
+export const LogoutButton = () => (
   <>
     <button
       className="btn justify-start"
-      onClick={login}
+      onClick={logout}
       type="button"
     >
-      Login
+      Logout
     </button>
   </>
 );

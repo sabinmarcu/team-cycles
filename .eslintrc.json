@@ -18,7 +18,7 @@
     "unicorn/prevent-abbreviations": [
       "error",
       {
-        "ignore": "[rR]ef$"
+        "ignore": [ "[rR]ef$" ]
       }
     ]
   },

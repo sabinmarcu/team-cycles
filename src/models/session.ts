@@ -1,7 +1,13 @@
 import { z } from 'zod';
 
-export const LoginSessionSchema = z.object({
+export const WebAuthnSessionSchema = z.object({
   challenge: z.string(),
 });
 
-export type LoginSessionType = z.infer<typeof LoginSessionSchema>;
+export const AuthSessionSchema = z.object({
+  name: z.string(),
+  id: z.string(),
+});
+
+export type WebAuthnSession = z.infer<typeof WebAuthnSessionSchema>;
+export type AuthSession = z.infer<typeof AuthSessionSchema>;
