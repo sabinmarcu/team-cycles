@@ -23,7 +23,7 @@ import {
 import { createUser } from './user';
 import { loginUser } from './login';
 
-export const startDeviceRegistration = async () => {
+export const startDeviceRegistration = async (deviceName = 'Initial Registration Device') => {
   const rawOptions: GenerateRegistrationOptionsOpts = {
     rpName: env.RP_NAME,
     rpID: env.RP_ID,
@@ -39,7 +39,10 @@ export const startDeviceRegistration = async () => {
 
   const options = await generateRegistrationOptions(rawOptions);
 
-  await createSession('login', { challenge: options.challenge });
+  await createSession('register', {
+    challenge: options.challenge,
+    deviceName,
+  });
 
   return options;
 };
@@ -49,7 +52,8 @@ export const verifyDeviceRegistration = async (
 ) => {
   const {
     challenge,
-  } = await getSession('login') ?? {};
+    deviceName,
+  } = await getSession('register') ?? {};
 
   const existingCredential = await getCredential(data.rawId);
   if (existingCredential) {
@@ -81,18 +85,38 @@ export const verifyDeviceRegistration = async (
 
   await removeSession('login');
 
-  return newDevice;
+  return [newDevice, deviceName] as const;
 };
 
 export const registerAccount = async (name: string) => {
   const response = await startDeviceRegistration();
 
   const localResponse = await startRegistration(response);
-  const verifiedResponse = await verifyDeviceRegistration(localResponse);
+  const [newDevice, deviceName] = await verifyDeviceRegistration(localResponse);
 
   const newUser = await createUser(name);
 
-  await addCredential(verifiedResponse, newUser.id);
+  await addCredential(
+    newDevice,
+    deviceName!,
+    newUser.id,
+  );
 
   return loginUser(newUser);
+};
+
+export const registerNewDevice = async (
+  accountId: string,
+  deviceName: string,
+) => {
+  const response = await startDeviceRegistration(deviceName);
+
+  const localResponse = await startRegistration(response);
+  const [newDevice, newDeviceName] = await verifyDeviceRegistration(localResponse);
+
+  await addCredential(
+    newDevice,
+    newDeviceName!,
+    accountId,
+  );
 };

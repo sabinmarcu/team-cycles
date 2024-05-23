@@ -6,6 +6,19 @@
   @apply min-w-[18rem] max-w-[80rem] mx-2 xl:mx-0;
 }
 
+.page-root {
+  @apply mt-8 mx-0 self-center container;
+}
+
+.page-title {
+  @apply border-b border-b-base-300 mb-4 pb-2 pl-4 flex flex-row justify-between
+}
+
+.page-title h2 {
+  @apply text-xl
+}
+
 * {
   transition: background 0.3s ease-out, background-color 0.3s ease-out, border-color 0.3s ease-out;
+  box-sizing: border-box;
 }

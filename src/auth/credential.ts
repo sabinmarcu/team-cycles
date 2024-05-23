@@ -7,6 +7,8 @@ import {
   parseDocument,
 
   addDoc,
+  deleteDoc,
+  doc,
 } from '@/firebase';
 import { CredentialSchema } from '@/models/credential';
 
@@ -30,13 +32,25 @@ export async function getCredential(id: string) {
   return databaseDevice;
 }
 
+export async function getCredentialsOfUser(id: string) {
+  const devicesCollection = collection(firestore, 'credential');
+  const databaseDevices = await getDocs(
+    query(devicesCollection, where('owner', '==', id)),
+  );
+
+  return databaseDevices.docs
+    .map((document_) => parseDocument(document_, CredentialSchema));
+}
+
 export async function addCredential(
   credential: UserDevice,
+  deviceName: string,
   owner: string,
 ) {
   const newCredentialData = {
     ...credential,
     owner,
+    deviceName,
   } satisfies DBUserDevice;
 
   const newDevice = await addDoc(
@@ -45,4 +59,10 @@ export async function addCredential(
   );
 
   return newDevice;
+}
+
+export async function removeCredential(
+  credentialId: string,
+) {
+  return deleteDoc(doc(firestore, 'credential', credentialId));
 }

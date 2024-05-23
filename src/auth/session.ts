@@ -4,7 +4,8 @@ import { cookies } from 'next/headers';
 import type { z } from 'zod';
 import {
   AuthSessionSchema,
-  WebAuthnSessionSchema,
+  LoginSessionSchema,
+  RegisterSessionSchema,
 } from '@/models/session';
 import {
   decrypt,
@@ -14,8 +15,8 @@ import {
 const sessionPrefix = 'session';
 
 const sessionSchemas = {
-  login: WebAuthnSessionSchema,
-  register: WebAuthnSessionSchema,
+  login: LoginSessionSchema,
+  register: RegisterSessionSchema,
   auth: AuthSessionSchema,
 } as const satisfies Record<string, z.ZodSchema>;
 export type SessionType = keyof typeof sessionSchemas;

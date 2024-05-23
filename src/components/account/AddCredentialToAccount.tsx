@@ -1,7 +1,6 @@
 'use client';
 
-import { registerAccount } from '@/auth/register';
-import { Person } from '@mui/icons-material';
+import { registerNewDevice } from '@/auth/register';
 import type {
   ChangeEvent,
   FormEvent,
@@ -12,23 +11,26 @@ import {
 } from 'react';
 import { createPortal } from 'react-dom';
 
-export const RegisterButton = () => {
+export interface AddCredentialToAccountProperties {
+  userId: string,
+}
+
+export default function AddCredentialToAccount({ userId }: AddCredentialToAccountProperties) {
   const modalRef = useRef<HTMLDialogElement>(null);
-  const [name, setName] = useState('');
+  const [deviceName, setDeviceName] = useState('');
   const changeName = ({ currentTarget: { value } }: ChangeEvent<HTMLInputElement>) => {
-    setName(value);
+    setDeviceName(value);
   };
   const startRegistration = async (event: FormEvent) => {
     event.preventDefault();
     event.stopPropagation();
-    if (!name) { return; }
     try {
-      await registerAccount(name);
+      await registerNewDevice(userId, deviceName);
     } catch (error) {
       // eslint-disable-next-line no-alert
       alert(error);
     } finally {
-      setName('');
+      setDeviceName('');
       modalRef.current?.close();
     }
   };
@@ -36,11 +38,11 @@ export const RegisterButton = () => {
   return (
     <>
       <button
-        className="btn justify-start"
-        onClick={openModal}
+        className="btn btn-primary btn-outline"
         type="button"
+        onClick={openModal}
       >
-        Register
+        Add Another Device
       </button>
       {createPortal((
         <dialog ref={modalRef} className="modal modal-bottom sm:modal-middle">
@@ -56,8 +58,7 @@ export const RegisterButton = () => {
             </form>
             <form onSubmit={startRegistration}>
               <p>
-                We&apos;ll just need your name to get things started,
-                and a YubiKey, TouchID, Passkey, etc.
+                We&apos;ll just need to name your new device.
               </p>
               {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
               <label
@@ -65,13 +66,12 @@ export const RegisterButton = () => {
                 htmlFor="account-name-input"
                 aria-controls="account-name-input"
               >
-                <Person />
                 <input
                   id="account-name-input"
                   type="text"
                   className="grow"
-                  placeholder="John Doe"
-                  value={name}
+                  placeholder="My Awesome YubiKey"
+                  value={deviceName}
                   onChange={changeName}
                 />
               </label>
@@ -80,7 +80,7 @@ export const RegisterButton = () => {
                 <button
                   className="btn btn-primary"
                   type="submit"
-                  disabled={!name}
+                  disabled={!deviceName}
                 >
                   Start!
                 </button>
@@ -95,4 +95,4 @@ export const RegisterButton = () => {
       document && document.body)}
     </>
   );
-};
+}

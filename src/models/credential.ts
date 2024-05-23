@@ -13,7 +13,10 @@ export type UserDevice = Omit<
   credentialPublicKey: string;
 };
 
-export type DBUserDevice = UserDevice & { owner: string };
+export type DBUserDevice = UserDevice & {
+  owner: string,
+  deviceName?: string,
+};
 
 export const CredentialSchema = createDatabaseSchema({
   credentialPublicKey: z.string(),
@@ -21,6 +24,7 @@ export const CredentialSchema = createDatabaseSchema({
   credentialID: z.string(),
   transports: z.array(z.string()).optional(),
   owner: z.string(),
+  deviceName: z.string().optional(),
 } satisfies DBRawSchema<keyof DBUserDevice>);
 
 export type CredentialType = z.infer<typeof CredentialSchema>;

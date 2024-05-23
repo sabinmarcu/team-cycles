@@ -18,10 +18,8 @@ export function AppLayout({
     <html lang="en" data-theme={theme}>
       <body className={inter.className}>
         <Header />
-        <main className="flex items-center justify-center w-full ">
-          <section className="container">
-            {children}
-          </section>
+        <main className="flex flex-col items-start justify-start w-full px-2">
+          {children}
         </main>
       </body>
     </html>

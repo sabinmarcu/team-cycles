@@ -3,6 +3,8 @@ import {
   onSnapshot,
   collection as getCollection,
   parseDocument,
+  query as databaseQuery,
+  where,
 } from '@/firebase';
 import type {
   Collection,
@@ -18,11 +20,18 @@ import type { z } from 'zod';
 
 export const useGetItemList = <T extends Collection>(
   collection: T,
+  query?: Parameters<typeof where>,
 ) => {
   const [data, setData] = useState<z.infer<SchemaOf<T>>[] | undefined>();
   const databaseCollection = useMemo(
-    () => getCollection(firestore, collection),
-    [collection],
+    () => {
+      const currentCollection = getCollection(firestore, collection);
+      if (query) {
+        return databaseQuery(currentCollection, where(...query));
+      }
+      return currentCollection;
+    },
+    [collection, query],
   );
   useEffect(
     () => {
